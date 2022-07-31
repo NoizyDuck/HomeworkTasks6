@@ -1,17 +1,15 @@
 package service.implementation;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.Objects;
 import model.Node;
 import model.Task;
-import java.util.List;
 import service.HistoryManager;
 
 public class InMemoryHistoryManager implements HistoryManager {
     private Node<Task> first;
     private Node<Task> last;
-    private Integer size = 10;
+
 
 
 
@@ -25,8 +23,8 @@ public class InMemoryHistoryManager implements HistoryManager {
                 first = newNode;
             else
                 tempLast.setNext(newNode);
-            size++;
-            map.put(task.getTaskId(), newNode);
+
+
             return newNode;
     }
 
@@ -56,22 +54,18 @@ public class InMemoryHistoryManager implements HistoryManager {
             Node<Task> next = nodeToRemove.getNext();
             if (Objects.nonNull(prev)) {
                 prev.setNext(next);
+                if (Objects.isNull(next)){
+                    last = prev;
+                }
             }
             if (Objects.nonNull(next)) {
                 next.setPrev(prev);
+                if (Objects.isNull(prev)){
+                    first = next;
+                }
             }
             map.remove(id);
         }
     }
 
-
-
-
-
-    @Override
-    public String toString() {
-        return "InMemoryHistoryManager{" +
-            "history=" + /*history*/ +
-            '}';
-    }
 }

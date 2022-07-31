@@ -180,9 +180,10 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void deleteTaskById(int Id) {
-        if (taskHashMap.containsKey(Id)) {
-            taskHashMap.remove(Id);
+    public void deleteTaskById(int id) {
+        if (taskHashMap.containsKey(id)) {
+            taskHashMap.remove(id);
+            inMemoryHistoryManager.remove(id);
         } else {
             Console.noTaskId();
         }
@@ -205,9 +206,10 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
-    public void deleteSubTaskById(int Id) {
-        if (subTaskHashMap.containsKey(Id)) {
-            subTaskHashMap.remove(Id);
+    public void deleteSubTaskById(int id) {
+        if (subTaskHashMap.containsKey(id)) {
+            subTaskHashMap.remove(id);
+            inMemoryHistoryManager.remove(id);
         } else {
             Console.noSubId();
         }
