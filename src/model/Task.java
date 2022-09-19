@@ -1,21 +1,42 @@
 package model;
 import model.constants.Status;
+import model.constants.TaskType;
 
 public class Task  {
     private Integer taskId;
     private String taskName;
     private String taskDescription;
     private Status status;
+    private TaskType taskType;
+
+    public Task(String taskName, String taskDescription, TaskType taskType) {
+        this.taskName = taskName;
+        this.taskDescription = taskDescription;
+        this.taskType = taskType;
+    }
+
+    public TaskType getTaskType() {
+        return taskType;
+    }
 
     public Task(String taskName, String taskDescription, Status status) {
         this.taskName = taskName;
         this.taskDescription = taskDescription;
         this.status = status;
+        this.taskType = TaskType.TASK;
     }
 
     public Task(String taskName, String taskDescription) {
         this.taskName = taskName;
         this.taskDescription = taskDescription;
+        this.taskType = TaskType.TASK;
+    }
+
+    public Task(String taskName, String taskDescription, Status status, TaskType taskType) {
+        this.taskName = taskName;
+        this.taskDescription = taskDescription;
+        this.status = status;
+        this.taskType = taskType;
     }
 
     public Integer getTaskId() {
@@ -52,11 +73,8 @@ public class Task  {
 
     @Override
     public String toString() {
-        return "{taskId=" + "'" + taskId + "'" +
-                ", Name='" + taskName + '\'' +
-                ", description='" + taskDescription + '\'' +
-                ", status=" + status +
-                '}';
+        return String.format("%s, %s, %s, %s, %s \n", taskId, taskType, taskName, status, taskDescription);
     }
 
 }
+

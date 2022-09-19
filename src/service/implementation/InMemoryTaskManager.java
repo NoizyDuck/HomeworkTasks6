@@ -1,19 +1,29 @@
 package service.implementation;
 
+import java.util.Arrays;
+import java.util.regex.Pattern;
 import model.Epic;
 import model.SubTask;
 import model.Task;
 import model.constants.Status;
+import model.constants.TaskType;
 import service.Console;
 import service.HistoryManager;
 import service.TaskManager;
 import java.util.HashMap;
 import java.util.List;
+import utils.Converter;
 import utils.Managers;
+
+import static model.constants.TaskType.EPIC;
+import static model.constants.TaskType.TASK;
+import static model.constants.TaskType.SUBTASK;
+
 
 public class InMemoryTaskManager implements TaskManager {
 
 
+    public static final Pattern NUMERIC_PATTERN = Pattern.compile("-?\\d+(\\.\\d+)?");
     protected static Integer taskId = 0;
     private HashMap<Integer, Task> taskHashMap = new HashMap<>();
     private HashMap<Integer, Epic> epicTaskHashMap = new HashMap<>();
@@ -216,6 +226,34 @@ public class InMemoryTaskManager implements TaskManager {
     }
 
     @Override
+    public void importData(List<String> readResult) {
+        readResult.forEach(line -> {
+            List<String> columns = Arrays.asList(line.split(","));
+            if (isNumeric(columns.get(0))) {
+                String taskType = columns.get(1);
+                if (TASK.toString().equals(taskType)) {
+                    Task task = Converter.convert(columns, TaskType.getFromString(taskType));
+                    taskHashMap.put(task.getTaskId(), task);
+                } else if (EPIC.toString().equals(taskType)) {
+                    Epic epic = (Epic) Converter.convert(columns, TaskType.getFromString(taskType));
+                    calculateEpicStatus(epic);
+                    epicTaskHashMap.put(epic.getTaskId(), epic);
+                } else if (SUBTASK.toString().equals(taskType)) {
+                    SubTask subTask =(SubTask) Converter.convert(columns, TaskType.getFromString(taskType));
+                    subTaskHashMap.put(subTask.getTaskId(), subTask);
+                }
+            }
+        });
+    }
+
+    private boolean isNumeric(String str) {
+        if (str == null) {
+            return false;
+        }
+        return NUMERIC_PATTERN.matcher(str).matches();
+    }
+
+    @Override
     public String getSubTaskListByEpicId(int id) {
         String result = null;
         if (epicTaskHashMap.containsKey(id)) {
@@ -265,6 +303,8 @@ public class InMemoryTaskManager implements TaskManager {
         calculateEpicStatus(epic);
     }
 }
+
+
 
 
 
