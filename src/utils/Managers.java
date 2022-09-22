@@ -7,13 +7,14 @@ import service.implementation.InMemoryHistoryManager;
 import service.implementation.InMemoryTaskManager;
 
 import java.io.File;
+import java.io.IOException;
 
-public class  Managers {
+public class Managers {
     private static TaskManager taskManager = new InMemoryTaskManager();
     private static HistoryManager historyManager;
     private static FileBackedTasksManager fileBackedTasksManager;
 
-   public static TaskManager getDefault() {
+    public static TaskManager getDefault() {
         if (taskManager == null) {
             taskManager = new InMemoryTaskManager();
             return taskManager;
@@ -29,11 +30,11 @@ public class  Managers {
         return historyManager;
     }
 
-    public static FileBackedTasksManager getDefaultFileBackedTasksManager(File file){
-       if (fileBackedTasksManager == null){
-           fileBackedTasksManager = new FileBackedTasksManager(file);
-           return  fileBackedTasksManager;
-           }
-       return fileBackedTasksManager;
+    public static FileBackedTasksManager getDefaultFileBackedTasksManager(File file) throws IOException {
+        if (fileBackedTasksManager == null) {
+            fileBackedTasksManager = new FileBackedTasksManager(file);
+            return fileBackedTasksManager;
+        }
+        return fileBackedTasksManager;
     }
 }

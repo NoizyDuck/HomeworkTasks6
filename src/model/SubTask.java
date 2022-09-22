@@ -1,4 +1,5 @@
 package model;
+
 import model.constants.Status;
 import model.constants.TaskType;
 
@@ -22,6 +23,6 @@ public class SubTask extends Task {
 
     @Override
     public String toString() {
-        return String.format("%s, %s, %s, %s, %s, %s \n", super.getTaskId(), super.getTaskType(), super.getTaskName(), super.getStatus(), super.getTaskDescription(), epicId);
+        return String.format("%s,%s,%s,%s,%s,%s \n", super.getTaskId(), super.getTaskType(), super.getTaskName(), super.getStatus(), super.getTaskDescription(), epicId);
     }
 }

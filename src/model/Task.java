@@ -1,8 +1,9 @@
 package model;
+
 import model.constants.Status;
 import model.constants.TaskType;
 
-public class Task  {
+public class Task {
     private Integer taskId;
     private String taskName;
     private String taskDescription;
@@ -73,8 +74,7 @@ public class Task  {
 
     @Override
     public String toString() {
-        return String.format("%s, %s, %s, %s, %s \n", taskId, taskType, taskName, status, taskDescription);
+        return String.format("%s,%s,%s,%s,%s \n", taskId, taskType, taskName, status, taskDescription);
     }
 
 }
-

@@ -1,6 +1,5 @@
 package service;
 
-import java.util.List;
 import model.Epic;
 import model.SubTask;
 import model.Task;
@@ -44,6 +43,9 @@ public interface TaskManager {
     void deleteSubTaskById(int Id);
 
     String getSubTaskListByEpicId(int id);
-
-    void importData(List<String> readResult);
+//  HashMap<Integer, Task> getTaskHashMap();
+// HashMap<Integer, Epic> getEpicTaskHashMap();
+//  HashMap<Integer, SubTask> getSubTaskHashMap();
+// void importData(List<String> readResult);
 }
+
