@@ -9,7 +9,6 @@ import java.util.HashMap;
 import java.util.Objects;
 
 public class InMemoryHistoryManager implements HistoryManager {
-    private Node<Task> first;
     private Node<Task> last;
 
 
@@ -19,9 +18,7 @@ public class InMemoryHistoryManager implements HistoryManager {
         Node<Task> tempLast = last;
         Node<Task> newNode = new Node<>(tempLast, task, null);
         last = newNode;
-        if (tempLast == null)
-            first = newNode;
-        else
+        if (tempLast != null)
             tempLast.setNext(newNode);
 
 
@@ -61,9 +58,9 @@ public class InMemoryHistoryManager implements HistoryManager {
             }
             if (Objects.nonNull(next)) {
                 next.setPrev(prev);
-                if (Objects.isNull(prev)) {
-                    first = next;
-                }
+//                if (Objects.isNull(prev)) {
+//                    first = next;
+//                }
             }
             map.remove(id);
         }

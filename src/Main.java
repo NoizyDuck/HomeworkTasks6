@@ -18,7 +18,7 @@ public class Main {
     public static void main(String[] args) throws IOException {
         TaskManager inMemoryTaskManager = Managers.getDefault();
         HistoryManager inMemoryHistoryManager = Managers.getDefaultHistory();
-        File file = new File("C:\\Users\\Win10_Game_OS\\IdeaProjects\\HomeworkTasks6\\test.csv");
+        File file = new File("src/resources/test.csv");
         FileBackedTasksManager fileBackedTasksManager = Managers.getDefaultFileBackedTasksManager(file);
         Task task1 = new Task("Task 1 name", "Task 1 description", Status.NEW);
         Task task2 = new Task("Task 2 name", "Task 2 description", Status.NEW);
@@ -34,6 +34,7 @@ public class Main {
         fileBackedTasksManager.getTaskById(task1.getTaskId());
         fileBackedTasksManager.getSubTaskById(subTask.getTaskId());
         System.out.println(inMemoryHistoryManager.getHistory());
+
 
 
     }

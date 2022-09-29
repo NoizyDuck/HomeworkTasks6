@@ -4,6 +4,8 @@ import model.Epic;
 import model.SubTask;
 import model.Task;
 
+import java.util.HashMap;
+
 public interface TaskManager {
 
     Task createTask(Task task);
@@ -11,12 +13,7 @@ public interface TaskManager {
     Epic createEpic(Epic epic);
 
     SubTask createSubTask(SubTask subTask);
-
-    String getTasks();
-
-    String getEpics();
-
-    String getSubTasks();
+    String getTask(HashMap<Integer,Task> map);
 
     void deleteAllTasks();
 

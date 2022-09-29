@@ -27,13 +27,13 @@ public class Converter {
 
     public static Task fromString(String line) {
         String[] fromString = line.split(",");
-        TaskType taskType = TaskType.getFromString(fromString[1]);
+        TaskType taskType = TaskType.valueOf(fromString[1]);
         if (TaskType.TASK.equals(taskType)) {
-            return new Task(fromString[2], fromString[4], Status.getFromString(fromString[3]),
-                    TaskType.getFromString(fromString[1]));
+            return new Task(fromString[2], fromString[4], Status.valueOf(fromString[3]),
+                    TaskType.valueOf(fromString[1]));
         }
         if (TaskType.SUBTASK.equals(taskType)) {
-            return new SubTask(fromString[2], fromString[4], Status.getFromString(fromString[3].trim()),
+            return new SubTask(fromString[2], fromString[4], Status.valueOf(fromString[3].trim()),
                     Integer.parseInt(fromString[5].trim()));
         }
         if (TaskType.EPIC.equals(taskType)) {
