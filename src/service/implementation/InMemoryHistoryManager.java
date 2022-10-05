@@ -11,8 +11,7 @@ import java.util.Objects;
 public class InMemoryHistoryManager implements HistoryManager {
     private Node<Task> last;
 
-
-    private HashMap<Integer, Node<Task>> map = new HashMap<>();
+    private final HashMap<Integer, Node<Task>> map = new HashMap<>();
 
     public Node<Task> linkLast(Task task) {
         Node<Task> tempLast = last;
@@ -20,7 +19,6 @@ public class InMemoryHistoryManager implements HistoryManager {
         last = newNode;
         if (tempLast != null)
             tempLast.setNext(newNode);
-
 
         return newNode;
     }
@@ -58,12 +56,10 @@ public class InMemoryHistoryManager implements HistoryManager {
             }
             if (Objects.nonNull(next)) {
                 next.setPrev(prev);
-//                if (Objects.isNull(prev)) {
-//                    first = next;
-//                }
+             }
             }
             map.remove(id);
         }
     }
 
-}
+

@@ -7,6 +7,8 @@ import model.constants.Status;
 import model.constants.TaskType;
 import service.HistoryManager;
 
+import java.time.LocalDateTime;
+import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -29,12 +31,14 @@ public class Converter {
         String[] fromString = line.split(",");
         TaskType taskType = TaskType.valueOf(fromString[1]);
         if (TaskType.TASK.equals(taskType)) {
+            LocalDateTime localDateTime = LocalDateTime.parse(fromString[5]);
             return new Task(fromString[2], fromString[4], Status.valueOf(fromString[3]),
-                    TaskType.valueOf(fromString[1]));
+                    TaskType.valueOf(fromString[1]), localDateTime,Long.parseLong(fromString[6]));
         }
         if (TaskType.SUBTASK.equals(taskType)) {
             return new SubTask(fromString[2], fromString[4], Status.valueOf(fromString[3].trim()),
-                    Integer.parseInt(fromString[5].trim()));
+                    TaskType.valueOf(fromString[1]), LocalDateTime.parse(fromString[5]), Long.parseLong(fromString[6]),
+                    Integer.parseInt(fromString[7].trim()));
         }
         if (TaskType.EPIC.equals(taskType)) {
             System.out.println();
@@ -46,8 +50,8 @@ public class Converter {
     public static List<Integer> createHistoryFromString(String line) {
         List<Integer> history = new ArrayList<>();
         String[] historyId = line.split(",");
-        for (int i = 0; i < historyId.length; i++) {
-            history.add(Integer.parseInt(historyId[i]));
+        for (String s : historyId) {
+            history.add(Integer.parseInt(s));
         }
         return history;
     }

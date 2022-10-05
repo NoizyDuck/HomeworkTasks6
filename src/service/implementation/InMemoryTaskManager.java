@@ -8,9 +8,11 @@ import service.Console;
 import service.HistoryManager;
 import service.TaskManager;
 import utils.Managers;
-
+import java.time.LocalDateTime;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.List;
+import java.util.TreeSet;
 
 public class InMemoryTaskManager implements TaskManager {
 
@@ -19,9 +21,17 @@ public class InMemoryTaskManager implements TaskManager {
     final HashMap<Integer, Task> taskHashMap = new HashMap<>();
     final HashMap<Integer, Epic> epicTaskHashMap = new HashMap<>();
     final HashMap<Integer, SubTask> subTaskHashMap = new HashMap<>();
-    // public static final Pattern NUMERIC_PATTERN = Pattern.compile("-?\\d+(\\.\\d+)?");
 
+    Comparator<Task> comparator = Comparator.comparing(Task::getStartTime);
+    final TreeSet<Task> prioritizedTasks = new TreeSet<>(comparator);
     HistoryManager inMemoryHistoryManager = Managers.getDefaultHistory();
+@Override
+    public TreeSet<Task> getPrioritizedTasks() {
+        prioritizedTasks.addAll(taskHashMap.values());
+        prioritizedTasks.addAll(epicTaskHashMap.values());
+        prioritizedTasks.addAll(subTaskHashMap.values());
+        return prioritizedTasks;
+    }
 
     @Override
     public Task createTask(Task task) {
@@ -74,33 +84,6 @@ public class InMemoryTaskManager implements TaskManager {
         return result.toString();
     }
 
-//    @Override
-//    public String getTasks() {
-//        StringBuilder result = new StringBuilder();
-//        for (Integer id : taskHashMap.keySet()) {
-//            result.append("\nModel.Task Number ").append(id).append(": ").append(taskHashMap.get(id).toString());
-//        }
-//        return result.toString();
-//    }
-//
-//    @Override
-//    public String getEpics() {
-//        StringBuilder result = new StringBuilder();
-//        for (Integer id : epicTaskHashMap.keySet()) {
-//            result.append("\nModel.Epic Number ").append(id).append(": ").append(epicTaskHashMap.get(id).toString());
-//        }
-//        return result.toString();
-//    }
-//
-//    @Override
-//    public String getSubTasks() {
-//        StringBuilder result = new StringBuilder();
-//        for (Integer id : subTaskHashMap.keySet()) {
-//            result.append("\nModel.SubTask Number ").append(id).append(": ").append(subTaskHashMap.get(id).toString());
-//        }
-//        return result.toString();
-//    }
-
     @Override
     public void deleteAllTasks() {
         taskHashMap.clear();
@@ -121,7 +104,7 @@ public class InMemoryTaskManager implements TaskManager {
         StringBuilder result = new StringBuilder();
         HistoryManager inMemoryHistoryManager = Managers.getDefaultHistory();
         if (taskHashMap.containsKey(id)) {
-            result.append("\nModel.Task Number ").append(id).append(": ").append(taskHashMap.get(id).toString());
+            result.append(taskHashMap.get(id).toString());
             inMemoryHistoryManager.addTask(taskHashMap.get(id));
             return result.toString();
         } else {
@@ -136,7 +119,7 @@ public class InMemoryTaskManager implements TaskManager {
         StringBuilder result = new StringBuilder();
         HistoryManager inMemoryHistoryManager = Managers.getDefaultHistory();
         if (epicTaskHashMap.containsKey(id)) {
-            result.append("\nModel.Epic Number ").append(id).append(": ").append(epicTaskHashMap.get(id).toString());
+            result.append(epicTaskHashMap.get(id).toString());
             inMemoryHistoryManager.addTask(epicTaskHashMap.get(id));
             return result.toString();
 
@@ -151,7 +134,7 @@ public class InMemoryTaskManager implements TaskManager {
         StringBuilder result = new StringBuilder();
         HistoryManager inMemoryHistoryManager = Managers.getDefaultHistory();
         if (subTaskHashMap.containsKey(id)) {
-            result.append("\nModel.SubTask Number " + id + ": " + subTaskHashMap.get(id).toString());
+            result.append(subTaskHashMap.get(id).toString());
             inMemoryHistoryManager.addTask(subTaskHashMap.get(id));
             return result.toString();
         } else {
@@ -225,27 +208,21 @@ public class InMemoryTaskManager implements TaskManager {
         }
     }
 
-    @Override
-    public String getSubTaskListByEpicId(int id) {
-        StringBuilder result = new StringBuilder();
-        if (epicTaskHashMap.containsKey(id)) {
-            result.append("\nModel.Epic Number ").append(id).append(": ").append(epicTaskHashMap.get(id).toString());
-            for (Epic epic : epicTaskHashMap.values()) {
-                for (Integer subId : epic.getSubTasksIds()) {
-                    result.append("\nModel.SubTask Number ").append(subId).append(": ").append(subTaskHashMap.get(subId).toString());
-                }
-            }
-            return result.toString();
-        } else {
-            Console.noEpicId();
-            return null;
-        }
+    private Long calculateEpicDuration(Epic epic) {
+        List<Integer> subTasksIds = epic.getSubTasksIds();
+
+        subTasksIds.forEach(id -> {
+            SubTask subTask = subTaskHashMap.get(id);
+            Long epicDuration = 0L;
+            epicDuration += subTask.getDuration();
+            epic.setDuration(epicDuration);
+        });
+        return epic.getDuration();
     }
 
-
     private void calculateEpicStatus(Epic epic) {
-        Integer statusNew = 0;
-        Integer statusDone = 0;
+        int statusNew = 0;
+        int statusDone = 0;
         List<Integer> subTasksIds = epic.getSubTasksIds();
         int size = subTasksIds.size();
         for (Integer subTaskId : subTasksIds) {
@@ -273,6 +250,37 @@ public class InMemoryTaskManager implements TaskManager {
         Epic epic = epicTaskHashMap.get(epicId);
         epic.linkSubtask(subTask);
         calculateEpicStatus(epic);
+        calculateEpicStartTime(epic, subTask.getStartTime());
+        calculateEpicEndTime(epic, subTask.getEndTime());
+        Long duration = calculateEpicDuration(epic);
+
+
+    }
+
+    private void calculateEpicEndTime(Epic epic, LocalDateTime subTaskEndTime) {
+        LocalDateTime epicEndTime = epic.getEndTime();
+        if (epicEndTime == null || subTaskEndTime.isAfter(epicEndTime)) {
+            epic.setEndTime(subTaskEndTime);
+        }
+    }
+
+    private void calculateEpicStartTime(Epic epic, LocalDateTime subTaskStartTime) {
+        LocalDateTime epicStartTime = epic.getStartTime();
+        if (epicStartTime == null || subTaskStartTime.isBefore(epicStartTime)) {
+            epic.setStartTime(subTaskStartTime);
+        }
+    }
+
+    public HashMap<Integer, Task> getTaskHashMap() {
+        return taskHashMap;
+    }
+
+    public HashMap<Integer, Epic> getEpicTaskHashMap() {
+        return epicTaskHashMap;
+    }
+
+    public HashMap<Integer, SubTask> getSubTaskHashMap() {
+        return subTaskHashMap;
     }
 }
 

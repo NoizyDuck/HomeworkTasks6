@@ -15,10 +15,7 @@ import java.io.FileWriter;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
+import java.util.*;
 
 
 public class FileBackedTasksManager extends InMemoryTaskManager {
@@ -31,7 +28,7 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
         this.file = file;
     }
 
-    public void loadDataFromFile(File file) throws IOException {
+    private void loadDataFromFile(File file) throws IOException {
         HistoryManager historyManager = Managers.getDefaultHistory();
         List<Integer> history = Collections.emptyList();
         try {
@@ -219,6 +216,10 @@ public class FileBackedTasksManager extends InMemoryTaskManager {
     public void deleteSubTaskById(int id) {
         super.deleteSubTaskById(id);
         save();
+    }
+    @Override
+    public TreeSet<Task> getPrioritizedTasks(){
+        return super.getPrioritizedTasks();
     }
 
 }

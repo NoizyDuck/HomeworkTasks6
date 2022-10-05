@@ -5,6 +5,7 @@ import model.SubTask;
 import model.Task;
 
 import java.util.HashMap;
+import java.util.TreeSet;
 
 public interface TaskManager {
 
@@ -39,10 +40,6 @@ public interface TaskManager {
 
     void deleteSubTaskById(int Id);
 
-    String getSubTaskListByEpicId(int id);
-//  HashMap<Integer, Task> getTaskHashMap();
-// HashMap<Integer, Epic> getEpicTaskHashMap();
-//  HashMap<Integer, SubTask> getSubTaskHashMap();
-// void importData(List<String> readResult);
+    TreeSet<Task> getPrioritizedTasks();
 }
 

@@ -3,17 +3,49 @@ package model;
 import model.constants.Status;
 import model.constants.TaskType;
 
+import java.time.LocalDateTime;
+
 public class Task {
     private Integer taskId;
     private String taskName;
     private String taskDescription;
-    private Status status;
+    private Status status = Status.NONE;
     private TaskType taskType;
+    private LocalDateTime startTime;
+    private Long duration;
 
     public Task(String taskName, String taskDescription, TaskType taskType) {
         this.taskName = taskName;
         this.taskDescription = taskDescription;
         this.taskType = taskType;
+    }
+
+    public Task(Integer taskId, String taskName, String taskDescription, Status status, TaskType taskType, LocalDateTime startTime, Long duration) {
+        this.taskId = taskId;
+        this.taskName = taskName;
+        this.taskDescription = taskDescription;
+        this.status = status;
+        this.taskType = taskType;
+        this.startTime = startTime;
+        this.duration = duration;
+    }
+
+    public Task(String taskName, String taskDescription, Status status, TaskType taskType, LocalDateTime startTime, Long duration) {
+        this.taskName = taskName;
+        this.taskDescription = taskDescription;
+        this.status = status;
+        this.taskType = taskType;
+        this.startTime = startTime;
+        this.duration = duration;
+    }
+
+
+    public LocalDateTime getEndTime () {
+        if (duration != null) {
+            return startTime.plusMinutes(duration);
+
+        }
+        throw new IllegalStateException("Duration is null, have to set duration first");
     }
 
     public TaskType getTaskType() {
@@ -52,16 +84,8 @@ public class Task {
         return taskName;
     }
 
-    public void setTaskName(String taskName) {
-        this.taskName = taskName;
-    }
-
     public String getTaskDescription() {
         return taskDescription;
-    }
-
-    public void setTaskDescription(String taskDescription) {
-        this.taskDescription = taskDescription;
     }
 
     public Status getStatus() {
@@ -72,9 +96,25 @@ public class Task {
         this.status = status;
     }
 
+    public LocalDateTime getStartTime() {
+        return startTime;
+    }
+
+    public void setStartTime(LocalDateTime startTime) {
+        this.startTime = startTime;
+    }
+
+    public Long getDuration() {
+        return duration;
+    }
+
+    public void setDuration(Long duration) {
+        this.duration = duration;
+    }
+
     @Override
     public String toString() {
-        return String.format("%s,%s,%s,%s,%s", taskId, taskType, taskName, status, taskDescription);
+        return String.format("%s,%s,%s,%s,%s,%s,%s", taskId, taskType, taskName, status, taskDescription, startTime,duration);
     }
 
 }
